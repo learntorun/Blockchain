@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"crypto/sha256"
+	"fmt"
 )
 
 // basic block struct with field of hash, data, previous hash
@@ -59,5 +60,10 @@ func main() {
 	chain.AddBlock("First block after Genesis")
 	chain.AddBlock("Second Block")
 	chain.AddBlock("Third Block")
+
+	for _, v := range chain.blocks {
+		fmt.Printf("Data : %s\n", v.Data)
+		fmt.Printf("Hash : %x\n", v.Hash)
+	}
 
 }
