@@ -1,69 +1,99 @@
 package main
 
 import (
-	"bytes"
-	"crypto/sha256"
+	"flag"
 	"fmt"
+	"blockchain/blockchain"
+	"os"
+	"runtime"
+	"strconv"
 )
 
-// basic block struct with field of hash, data, previous hash
-type Block struct {
-	Hash []byte
-	Data []byte
-	PrevHash []byte
+type CommandLine struct {
+	blockchain *blockchain.Blockchain
 }
 
-// Blockchain struct  with only field of array of block pointer as array
-type Blockchain struct {
-	blocks []*Block
+func (cli *CommandLine) printUsage() {
+	fmt.Println("Usage")
+	fmt.Println("-------------------------------------------------------")
+	fmt.Println(" add -block BLOCK_DATA : add a block to chain")
+	fmt.Println(" print                 : Prints the block in the chain ")
+	fmt.Println("-------------------------------------------------------")
 }
 
-// derive hash data from Block data and previous block hash
-func (b *Block) DeriveHash() {
-	info := bytes.Join([][]byte{b.Data, b.PrevHash}, []byte{})
-	hash := sha256.Sum256(info)
-	b.Hash = hash[:]
-}
-
-// create a block caculating hash value with data and prevHash
-func CreateBlock(data string, prevHash []byte) *Block {
-	block := &Block{
-		Hash:     []byte{},
-		Data:     []byte(data),
-		PrevHash: prevHash,
+func (cli *CommandLine) validateArgs() {
+	if len(os.Args) < 2 {
+		cli.printUsage()
+		runtime.Goexit()
 	}
-	block.DeriveHash()
-	return block
 }
 
-// Add a new block to blockchain
-func (chain *Blockchain) AddBlock(data string) {
-	prevBlock := chain.blocks[len(chain.blocks)-1]
-	newBlock := CreateBlock(data, prevBlock.Hash)
-	chain.blocks = append(chain.blocks, newBlock)
+func (cli *CommandLine) addBlock(data string) {
+	cli.blockchain.AddBlock(data)
+	fmt.Println("New block added.")
 }
 
-// Genesis Block
-func Genesis() *Block {
-	return CreateBlock("Genesis", []byte{})
+func (cli *CommandLine) printChain() {
+	iter := cli.blockchain.Iterator()
+
+	for {
+		block := iter.Next()
+
+		fmt.Printf("Previous Hash : %x\n", block.PrevHash)
+		fmt.Printf("Data : %s\n", block.Data)
+		fmt.Printf("Hash : %x\n", block.Hash)
+
+		pow := blockchain.NewProof(block)
+		fmt.Printf("POW : %s\n", strconv.FormatBool(pow.Validate()))
+		fmt.Println()
+
+		if len(block.PrevHash) == 0 {
+			break
+		}
+	}
 }
 
-// Initialize Blockchain with Genesis Block
-func InitBlockChain() *Blockchain {
-	return &Blockchain{[]*Block{Genesis()}}
-}
+func (cli*CommandLine) run() {
+	cli.validateArgs()
 
+	addBlockCmd := flag.NewFlagSet("add", flag.ExitOnError)
+	printChainCmd := flag.NewFlagSet("print", flag.ExitOnError)
+	addBlockData := addBlockCmd.String("block", "", "Block data")
+
+	switch os.Args[1] {
+	case "add":
+		err := addBlockCmd.Parse(os.Args[2:])
+		blockchain.Handle(err)
+	case "print":
+		err := printChainCmd.Parse(os.Args[2:])
+		blockchain.Handle(err)
+	default:
+		cli.printUsage()
+		runtime.Goexit()
+	}
+
+	if addBlockCmd.Parsed() {
+		if *addBlockData == "" {
+			addBlockCmd.Usage()
+			runtime.Goexit()
+		}
+		cli.addBlock(*addBlockData)
+	}
+
+	if printChainCmd.Parsed() {
+		cli.printChain()
+	}
+
+
+}
 
 func main() {
+	defer os.Exit(0)
+	chain := blockchain.InitBlockChain()
+	defer chain.Database.Close()
 
-	chain := InitBlockChain()
-	chain.AddBlock("First block after Genesis")
-	chain.AddBlock("Second Block")
-	chain.AddBlock("Third Block")
+	cli := CommandLine{chain}
+	cli.run()
 
-	for _, v := range chain.blocks {
-		fmt.Printf("Data : %s\n", v.Data)
-		fmt.Printf("Hash : %x\n", v.Hash)
-	}
 
 }
