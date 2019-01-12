@@ -11,16 +11,18 @@ const (
 	dbPath = "./tmp/blocks"
 )
 
-// Blockchain struct  with only field of array of block pointer as array
+
 type Blockchain struct {
 	lastHash []byte
 	Database *badger.DB
 }
 
+
 type BlockchainIterator struct {
 	CurrentHash []byte
 	Database *badger.DB
 }
+
 
 func InitBlockChain() *Blockchain {
 
@@ -63,7 +65,7 @@ func InitBlockChain() *Blockchain {
 	return &chain
 }
 
-// Add a new block to blockchain
+
 func (chain *Blockchain) AddBlock(data string) {
 
 	var lastHash []byte
@@ -96,10 +98,12 @@ func (chain *Blockchain) AddBlock(data string) {
 
 }
 
+
 func (chain *Blockchain) Iterator() *BlockchainIterator {
 	iter := &BlockchainIterator{chain.lastHash, chain.Database}
 	return iter
 }
+
 
 func (iter *BlockchainIterator) Next() *Block {
 

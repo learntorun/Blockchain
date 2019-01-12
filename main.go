@@ -9,9 +9,11 @@ import (
 	"strconv"
 )
 
+
 type CommandLine struct {
 	blockchain *blockchain.Blockchain
 }
+
 
 func (cli *CommandLine) printUsage() {
 	fmt.Println("Usage")
@@ -21,6 +23,7 @@ func (cli *CommandLine) printUsage() {
 	fmt.Println("-------------------------------------------------------")
 }
 
+
 func (cli *CommandLine) validateArgs() {
 	if len(os.Args) < 2 {
 		cli.printUsage()
@@ -28,10 +31,12 @@ func (cli *CommandLine) validateArgs() {
 	}
 }
 
+
 func (cli *CommandLine) addBlock(data string) {
 	cli.blockchain.AddBlock(data)
 	fmt.Println("New block added.")
 }
+
 
 func (cli *CommandLine) printChain() {
 	iter := cli.blockchain.Iterator()
@@ -52,6 +57,7 @@ func (cli *CommandLine) printChain() {
 		}
 	}
 }
+
 
 func (cli*CommandLine) run() {
 	cli.validateArgs()
@@ -86,6 +92,7 @@ func (cli*CommandLine) run() {
 
 
 }
+
 
 func main() {
 	defer os.Exit(0)

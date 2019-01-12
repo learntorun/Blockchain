@@ -14,7 +14,6 @@ type Block struct {
 }
 
 
-// create a block caculating hash value with data and prevHash
 func CreateBlock(data string, prevHash []byte) *Block {
 
 	block := &Block{[]byte{}, []byte(data), prevHash, 0}
@@ -29,10 +28,10 @@ func CreateBlock(data string, prevHash []byte) *Block {
 
 
 
-// Genesis Block
 func Genesis() *Block {
 	return CreateBlock("Genesis", []byte{})
 }
+
 
 func (b *Block) Serialize() []byte {
 
@@ -43,6 +42,7 @@ func (b *Block) Serialize() []byte {
 	return res.Bytes()
 
 }
+
 
 func Deserialize(data []byte) *Block {
 

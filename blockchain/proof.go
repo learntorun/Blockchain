@@ -11,7 +11,7 @@ import (
 )
 
 
-const Difficulty = 12
+const Difficulty = 16
 
 type ProofOfWork struct {
 	Block *Block
