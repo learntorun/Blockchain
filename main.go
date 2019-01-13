@@ -38,14 +38,13 @@ func (cli *CommandLine) validateArgs() {
 func (cli *CommandLine) printChain() {
 	chain := blockchain.ContinueBlockChain("")
 	defer chain.Database.Close()
-	iter := cli.blockchain.Iterator()
+	iter := chain.Iterator()
 
 	for {
 		block := iter.Next()
 
 		fmt.Printf("Previous Hash : %x\n", block.PrevHash)
 		fmt.Printf("Hash : %x\n", block.Hash)
-
 		pow := blockchain.NewProof(block)
 		fmt.Printf("POW : %s\n", strconv.FormatBool(pow.Validate()))
 		fmt.Println()
