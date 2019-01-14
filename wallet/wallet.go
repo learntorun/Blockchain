@@ -1,11 +1,12 @@
-package blockchain
+package wallet
 
 import (
-	"crypto"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"fmt"
+	"golang.org/x/crypto/ripemd160"
 	"log"
 )
 
@@ -19,6 +20,24 @@ const (
 type Wallet struct {
 	PrivateKey ecdsa.PrivateKey
 	PublicKey []byte
+}
+
+
+func (w Wallet) Address() []byte {
+	pubHash := PublicKeyHash(w.PublicKey)
+
+	versionedHash := append([]byte{version}, pubHash...)
+	checksum := Checksum(versionedHash)
+
+	fullHash := append(versionedHash, checksum...)
+	address := Base58Encode(fullHash)
+
+	fmt.Printf("Public Key : %x\n", w.PublicKey)
+	fmt.Printf("Public Hash : %x\n", pubHash)
+	fmt.Printf("Address : %x\n", address)
+
+	return address
+
 }
 
 
@@ -49,7 +68,7 @@ func MakeWallet() *Wallet {
 func PublicKeyHash(pubKey []byte) []byte {
 	pubHash := sha256.Sum256(pubKey)
 
-	hasher := crypto.RIPEMD160.New()
+	hasher := ripemd160.New()
 	_, err := hasher.Write(pubHash[:])
 	if err != nil {
 		log.Panic(err)
