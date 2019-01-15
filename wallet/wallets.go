@@ -10,11 +10,14 @@ import (
 	"os"
 )
 
+
 const walletFile = "./tmp/wallets.data"
+
 
 type Wallets struct {
 	Wallets map[string]*Wallet
 }
+
 
 func CreateWallets() (*Wallets, error) {
 	wallets := Wallets{}
@@ -24,6 +27,7 @@ func CreateWallets() (*Wallets, error) {
 
 	return &wallets, err
 }
+
 
 func (ws *Wallets) AddWallet() string {
 	wallet := MakeWallet()
@@ -44,6 +48,7 @@ func (ws Wallets) GetAllAddresses() []string {
 
 	return addresses
 }
+
 
 func (ws Wallets) GetWallet(address string) Wallet {
 	return *ws.Wallets[address]

@@ -5,7 +5,6 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
-	"fmt"
 	"golang.org/x/crypto/ripemd160"
 	"log"
 )
@@ -31,10 +30,6 @@ func (w Wallet) Address() []byte {
 
 	fullHash := append(versionedHash, checksum...)
 	address := Base58Encode(fullHash)
-
-	fmt.Printf("Public Key : %x\n", w.PublicKey)
-	fmt.Printf("Public Hash : %x\n", pubHash)
-	fmt.Printf("Address : %x\n", address)
 
 	return address
 
@@ -73,9 +68,9 @@ func PublicKeyHash(pubKey []byte) []byte {
 	if err != nil {
 		log.Panic(err)
 	}
-	publicRipMD := hasher.Sum(nil)
+	publicRipeMD := hasher.Sum(nil)
 
-	return publicRipMD
+	return publicRipeMD
 }
 
 
