@@ -9,7 +9,7 @@ import (
 
 type Block struct {
 	Hash []byte
-	TransActions []*Transaction
+	Transactions []*Transaction
 	PrevHash []byte
 	Nonce int
 }
@@ -18,7 +18,7 @@ func (b *Block) HashTransactions() []byte {
 	var txHashes [][]byte
 	var txHash [32]byte
 
-	for _, tx := range b.TransActions {
+	for _, tx := range b.Transactions {
 		txHashes = append(txHashes, tx.ID)
 	}
 
