@@ -1,12 +1,11 @@
 # Blockchain
 
-## Structure
 
-### Block / Blockchain
-### Proof
-### Transaction / TX
-### UTXO
+## Block / Blockchain
+## Proof
+## Transaction / TX
+## UTXO
 
-### CLI
+## CLI
 
-### WALLET
+## WALLET
