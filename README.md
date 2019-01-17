@@ -2,12 +2,10 @@
 
 ## Structure
 
-### BLOCKCHAIN
-#### Block
-#### Blockchain
-#### Proof
-#### Transaction / TX
-##### UTXO
+### Block / Blockchain
+### Proof
+### Transaction / TX
+### UTXO
 
 ### CLI
 
