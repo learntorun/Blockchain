@@ -18,13 +18,13 @@ type CommandLine struct {
 func (cli *CommandLine) printUsage() {
 	fmt.Println("Usage")
 	fmt.Println("--------------------------------------------------------------")
-	fmt.Println(" getbalance -address ADDRESS : get the balance for the address")
 	fmt.Println(" createblockchain -address ADDRESS : create a blockchain")
-	fmt.Println(" printchain : print the blocks in the chain")
-	fmt.Println(" send -from FROM -to TO -amount AMOUNT : send amount of coun")
 	fmt.Println(" createwallet : create a new wallet")
+	fmt.Println(" send -from FROM -to TO -amount AMOUNT : send amount of coun")
+	fmt.Println(" getbalance -address ADDRESS : get the balance for the address")
 	fmt.Println(" listaddress : list the addresses in wallet file")
 	fmt.Println(" reindexutxo : rebuild the UTXO set")
+	fmt.Println(" printchain : print the blocks in the chain")
 	fmt.Println("---------------------------------------------------------------")
 }
 
@@ -116,7 +116,9 @@ func (cli *CommandLine) send(from, to string, amount int) {
 	defer chain.Database.Close()
 
 	tx := blockchain.NewTransaction(from, to, amount, &UTXOSet)
-	block := chain.AddBlock([]*blockchain.Transaction{tx})
+	cbtx := blockchain.CoinbaseTx(from, "")
+
+	block := chain.AddBlock([]*blockchain.Transaction{cbtx, tx})
 	UTXOSet.Update(block)
 	fmt.Println("Success!")
 }
